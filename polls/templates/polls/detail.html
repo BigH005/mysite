@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ question.question_text }} — Polls</title>
+    <link rel="stylesheet" href="{% static 'polls/style.css' %}">
+</head>
+
+<body>
+    <div class="app">
+        <header class="masthead">
+            <h1 class="masthead-title"><span class="mark"></span>Polls</h1>
+        </header>
+
+        <div class="detail-panel">
+            <div class="detail-eyebrow">Cast your vote</div>
+            <h2 class="detail-question">{{ question.question_text }}</h2>
+            <div class="detail-date">Published {{ question.pub_date|date:"M j, Y \a\t g:i A" }}</div>
+
+            {% if error_message %}<p class="error">{{ error_message }}</p>{% endif %}
+
+            <form action="{% url 'polls:vote' question.id %}" method="post">
+                {% csrf_token %}
+                <div class="choices">
+                    {% for choice in question.choice_set.all %}
+                    <div class="choice">
+                        <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
+                        <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label>
+                    </div>
+                    {% empty %}
+                    <p class="empty-list">This question has no choices yet.</p>
+                    {% endfor %}
+                </div>
+                <div class="vote-actions">
+                    <button type="submit" class="btn btn-crimson">Vote</button>
+                    <span class="vote-note"><a href="{% url 'polls:results' question.id %}">See current results
+                            →</a></span>
+                </div>
+            </form>
+
+            <p class="back-links"><a href="{% url 'polls:index' %}">← Back to all polls</a></p>
+        </div>
+    </div>
+</body>
+
+</html>

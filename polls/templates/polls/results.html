@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Results — {{ question.question_text }}</title>
+  <link rel="stylesheet" href="{% static 'polls/style.css' %}">
+</head>
+<body>
+<div class="app">
+  <header class="masthead">
+    <h1 class="masthead-title"><span class="mark"></span>Polls</h1>
+  </header>
+
+  <div class="detail-panel">
+    <div class="detail-eyebrow">Results</div>
+    <h2 class="detail-question">{{ question.question_text }}</h2>
+
+    <div class="results">
+      {% for choice in question.choice_set.all %}
+        <div class="result-row">
+          <div class="result-top">
+            <span class="r-text">{{ choice.choice_text }}</span>
+            <span class="r-stat">
+              {{ choice.votes }} vote{{ choice.votes|pluralize }}
+              ({% if total_votes %}{% widthratio choice.votes total_votes 100 %}{% else %}0{% endif %}%)
+            </span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width: {% if total_votes %}{% widthratio choice.votes total_votes 100 %}{% else %}0{% endif %}%;"></div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <p class="back-links">
+      <a href="{% url 'polls:detail' question.id %}">← Vote again</a>
+      <a href="{% url 'polls:index' %}">All polls</a>
+    </p>
+  </div>
+</div>
+</body>
+</html>

@@ -1,9 +1,42 @@
-{% if latest_question_list %}
-<ul>
-    {% for question in latest_question_list %}
-    <li><a href="/polls/{{ question.id }}/">{{ question.question_text }}</a></li>
-    {% endfor %}
-</ul>
-{% else %}
-<p>No polls are available.</p>
-{% endif %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Polls</title>
+  <link rel="stylesheet" href="{% static 'polls/style.css' %}">
+</head>
+
+<body>
+  <div class="app">
+    <header class="masthead">
+      <h1 class="masthead-title"><span class="mark"></span>Polls</h1>
+      <p class="masthead-sub">Ask a question, offer choices, count the votes.</p>
+    </header>
+
+    <div class="list-panel">
+      <h2>Questions</h2>
+      {% if latest_question_list %}
+      <ul id="question-list">
+        {% for question in latest_question_list %}
+        <li>
+          <a class="q-item" href="{% url 'polls:detail' question.id %}">
+            <div class="q-text">{{ question.question_text }}</div>
+            <div class="q-meta">
+              <span>{{ question.choice_set.count }} choice{{ question.choice_set.count|pluralize }}</span>
+              <span>published {{ question.pub_date|date:"M j, Y" }}</span>
+            </div>
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="empty-list">No polls are available yet.</p>
+      {% endif %}
+    </div>
+  </div>
+</body>
+
+</html>
